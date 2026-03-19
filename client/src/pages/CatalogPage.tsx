@@ -1,22 +1,30 @@
-import { useMemo, useState } from 'react';
-import { Box, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import { LuSearch } from 'react-icons/lu';
 import { SearchBar } from '../components/SearchBar';
 import { CategoryCard } from '../components/CategoryCard';
 import { ProductCard } from '../components/ProductCard';
+import { ProductDetailDrawer } from '../components/ProductDetailDrawer';
+import { PageLayout } from '../components/PageLayout';
 import { useCart } from '../context/CartContext';
 import { categories, products } from '../api/mockData';
+import type { Product } from '../api/mockData';
 
 interface CatalogPageProps {
   onProfileClick: () => void;
-  sidebarOpen?: boolean;
 }
 
-export const CatalogPage: React.FC<CatalogPageProps> = ({
-  onProfileClick,
-}) => {
+export const CatalogPage: React.FC<CatalogPageProps> = ({ onProfileClick }) => {
   const [searchValue, setSearchValue] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
   const { totalCount } = useCart();
+
+  const handleProductClick = useCallback((product: Product) => {
+    setSelectedProduct(product);
+    setDetailOpen(true);
+  }, []);
 
   const filteredProducts = useMemo(() => {
     let list = products;
@@ -34,8 +42,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     return list;
   }, [selectedCategoryId, searchValue]);
 
+  const isEmpty = filteredProducts.length === 0;
+
   return (
-    <Box maxW="480px" mx="auto" w="100%" minH="100dvh" pb={6}>
+    <PageLayout>
       <Flex direction="column" gap={4} p={4}>
         <SearchBar
           onProfileClick={onProfileClick}
@@ -58,15 +68,43 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         </Flex>
 
         <Heading size="md" textAlign="left">
-          Продукции
+          Продукты
         </Heading>
 
-        <SimpleGrid columns={2} gap={4}>
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </SimpleGrid>
+        {isEmpty ? (
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            py={12}
+            gap={4}
+            color="fg.muted"
+          >
+            <LuSearch size={48} style={{ opacity: 0.5 }} />
+            <Text fontSize="sm" textAlign="center">
+              {searchValue.trim() || selectedCategoryId
+                ? 'Ничего не найдено. Попробуйте изменить запрос или категорию.'
+                : 'Нет товаров в этой категории.'}
+            </Text>
+          </Flex>
+        ) : (
+          <SimpleGrid columns={2} gap={4}>
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onProductClick={handleProductClick}
+              />
+            ))}
+          </SimpleGrid>
+        )}
       </Flex>
-    </Box>
+
+      <ProductDetailDrawer
+        product={selectedProduct}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
+    </PageLayout>
   );
 };

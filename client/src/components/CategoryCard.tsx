@@ -13,15 +13,30 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   isSelected,
   onClick,
 }) => {
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick]
+  );
+
   return (
     <CardRoot
       flexShrink={0}
       w="80px"
-      cursor="pointer"
+      cursor={onClick ? 'pointer' : 'default'}
       variant={isSelected ? 'elevated' : 'outline'}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-pressed={onClick ? isSelected : undefined}
       transition="all 0.2s"
-      _active={{ transform: 'scale(0.98)' }}
+      _active={onClick ? { transform: 'scale(0.98)' } : undefined}
+      _focusVisible={{ outline: '2px solid', outlineColor: 'blue.500', outlineOffset: '2px' }}
     >
       <Box position="relative" aspectRatio={1} overflow="hidden" borderRadius="md">
         <Image
@@ -30,6 +45,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           objectFit="cover"
           w="100%"
           h="100%"
+          loading="lazy"
         />
       </Box>
       <Text

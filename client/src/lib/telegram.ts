@@ -15,6 +15,14 @@ export function isTelegramWebApp(): boolean {
 }
 
 /**
+ * Вызывает haptic feedback при добавлении в корзину и подобных действиях.
+ */
+export function triggerHaptic(): void {
+  const webApp = getWebApp();
+  webApp?.HapticFeedback?.impactOccurred?.('light');
+}
+
+/**
  * Инициализация Mini App: ready(), expand(), подстановка цветов темы в хедер/фон.
  * Вызывать один раз при старте приложения.
  */

@@ -8,19 +8,53 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { LuShoppingCart } from 'react-icons/lu';
+import { LuPackage, LuShoppingCart } from 'react-icons/lu';
+
+const ProductImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
+  const [error, setError] = React.useState(false);
+  if (error) {
+    return (
+      <Flex w="100%" h="100%" bg="bg.muted" align="center" justify="center" color="fg.muted">
+        <LuPackage size={24} />
+      </Flex>
+    );
+  }
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      objectFit="cover"
+      w="100%"
+      h="100%"
+      loading="lazy"
+      onError={() => setError(true)}
+    />
+  );
+};
+
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../lib/formatPrice';
+import { PageLayout } from '../components/PageLayout';
+import { triggerHaptic } from '../lib/telegram';
 
 export const CartPage: React.FC = () => {
   const navigate = useNavigate();
   const { items, totalPrice, setQuantity } = useCart();
 
+  const handleQuantityChange = React.useCallback(
+    (productId: number, newQty: number) => {
+      setQuantity(productId, newQty);
+      triggerHaptic();
+    },
+    [setQuantity]
+  );
+
   if (items.length === 0) {
     return (
-      <Box maxW="480px" mx="auto" w="100%" minH="100dvh" p={6}>
+      <PageLayout>
         <Flex
+          p={6}
           direction="column"
           align="center"
           justify="center"
@@ -33,8 +67,8 @@ export const CartPage: React.FC = () => {
               position="absolute"
               bottom={-4}
               right={-4}
-              bg="orange.500"
-              color="white"
+              bg="fg.muted"
+              color="bg"
               borderRadius="full"
               w={10}
               h={10}
@@ -43,8 +77,9 @@ export const CartPage: React.FC = () => {
               justifyContent="center"
               fontSize="xl"
               fontWeight="bold"
+              aria-hidden
             >
-              ×
+              0
             </Box>
           </Box>
           <VStack gap={2} textAlign="center">
@@ -63,15 +98,15 @@ export const CartPage: React.FC = () => {
             Перейти на главную
           </Button>
         </Flex>
-      </Box>
+      </PageLayout>
     );
   }
 
   return (
-    <Box maxW="480px" mx="auto" w="100%" minH="100dvh" display="flex" flexDirection="column">
+    <PageLayout pb={0} flexContent>
       <Box p={4} flex={1}>
         <Heading size="lg" textAlign="left" mb={4}>
-          Ваша Корзина
+          Ваша корзина
         </Heading>
         <VStack gap={4} align="stretch">
           {items.map(({ product, quantity }) => (
@@ -91,13 +126,7 @@ export const CartPage: React.FC = () => {
                 overflow="hidden"
                 bg="bg.muted"
               >
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  objectFit="cover"
-                  w="100%"
-                  h="100%"
-                />
+                <ProductImage src={product.image} alt={product.title} />
               </Box>
               <Flex flex={1} direction="column" justify="space-between" minW={0}>
                 <Text fontWeight="semibold" lineClamp={2} fontSize="sm">
@@ -112,7 +141,8 @@ export const CartPage: React.FC = () => {
                     colorPalette="red"
                     variant="outline"
                     px={3}
-                    onClick={() => setQuantity(product.id, quantity - 1)}
+                    aria-label="Уменьшить количество"
+                    onClick={() => handleQuantityChange(product.id, quantity - 1)}
                   >
                     –
                   </Button>
@@ -126,10 +156,11 @@ export const CartPage: React.FC = () => {
                   </Box>
                   <Button
                     size="sm"
-                    colorPalette="orange"
+                    colorPalette="green"
                     variant="outline"
                     px={3}
-                    onClick={() => setQuantity(product.id, quantity + 1)}
+                    aria-label="Увеличить количество"
+                    onClick={() => handleQuantityChange(product.id, quantity + 1)}
                   >
                     +
                   </Button>
@@ -149,6 +180,6 @@ export const CartPage: React.FC = () => {
           Оформить • {formatPrice(totalPrice)}
         </Button>
       </Box>
-    </Box>
+    </PageLayout>
   );
 };

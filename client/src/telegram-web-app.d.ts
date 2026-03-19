@@ -45,6 +45,12 @@ export interface WebAppInitDataUnsafe {
   hash: string;
 }
 
+export interface HapticFeedback {
+  impactOccurred: (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => void;
+  notificationOccurred: (type: 'error' | 'success' | 'warning') => void;
+  selectionChanged: () => void;
+}
+
 export interface BackButton {
   show: () => void;
   hide: () => void;
@@ -66,6 +72,7 @@ export interface TelegramWebApp {
   backgroundColor: string;
   isClosingConfirmationEnabled: boolean;
   BackButton: BackButton;
+  HapticFeedback: HapticFeedback;
   ready: () => void;
   expand: () => void;
   close: () => void;

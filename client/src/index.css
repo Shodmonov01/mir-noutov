@@ -13,7 +13,6 @@
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
@@ -36,23 +35,31 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+:root[data-theme='dark'] {
+  --text: var(--tg-theme-text-color, #ffffff);
+  --text-h: var(--tg-theme-text-color, #ffffff);
+  --bg: var(--tg-theme-bg-color, #18222d);
+  --border: var(--tg-theme-section-separator-color, #3d4f5f);
+  --code-bg: var(--tg-theme-secondary-bg-color, #232e3c);
+  --accent: #64b5f6;
+  --accent-bg: rgba(100, 181, 246, 0.15);
+  --accent-border: rgba(100, 181, 246, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.3) 0 10px 15px -3px, rgba(0, 0, 0, 0.2) 0 4px 6px -2px;
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --text: var(--tg-theme-text-color, #ffffff);
+    --text-h: var(--tg-theme-text-color, #ffffff);
+    --bg: var(--tg-theme-bg-color, #18222d);
+    --border: var(--tg-theme-section-separator-color, #3d4f5f);
+    --code-bg: var(--tg-theme-secondary-bg-color, #232e3c);
+    --accent: #64b5f6;
+    --accent-bg: rgba(100, 181, 246, 0.15);
+    --accent-border: rgba(100, 181, 246, 0.5);
+    --shadow:
+      rgba(0, 0, 0, 0.3) 0 10px 15px -3px, rgba(0, 0, 0, 0.2) 0 4px 6px -2px;
   }
 }
 
@@ -83,12 +90,12 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+  font-size: 36px;
+  letter-spacing: -1.08px;
+  margin: 20px 0;
+  @media (min-width: 1025px) {
+    font-size: 48px;
+    margin: 28px 0;
   }
 }
 h2 {

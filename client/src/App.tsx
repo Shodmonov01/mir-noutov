@@ -15,12 +15,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <CatalogPage
-              onProfileClick={() => setSidebarOpen(true)}
-              sidebarOpen={sidebarOpen}
-            />
-          }
+          element={<CatalogPage onProfileClick={() => setSidebarOpen(true)} />}
         />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />

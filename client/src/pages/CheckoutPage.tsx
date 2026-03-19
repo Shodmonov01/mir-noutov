@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { PageLayout } from '../components/PageLayout';
 import {
   LuMapPin,
   LuMessageSquare,
@@ -32,6 +33,7 @@ interface CheckoutRowProps {
   title: string;
   value: string;
   onClick?: () => void;
+  hasError?: boolean;
 }
 
 const CheckoutRow: React.FC<CheckoutRowProps> = ({
@@ -39,16 +41,34 @@ const CheckoutRow: React.FC<CheckoutRowProps> = ({
   title,
   value,
   onClick,
-}) => (
+  hasError,
+}) => {
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick]
+  );
+
+  return (
   <Flex
     align="center"
     gap={4}
     p={4}
     bg="bg.subtle"
+    borderWidth={hasError ? 2 : 0}
+    borderColor={hasError ? 'red.500' : 'transparent'}
     borderRadius="lg"
     cursor={onClick ? 'pointer' : 'default'}
     onClick={onClick}
+    onKeyDown={handleKeyDown}
+    role={onClick ? 'button' : undefined}
+    tabIndex={onClick ? 0 : undefined}
     _hover={onClick ? { bg: 'bg.muted' } : undefined}
+    _focusVisible={onClick ? { outline: '2px solid', outlineColor: 'blue.500', outlineOffset: '2px' } : undefined}
   >
     <Box color="fg.muted" flexShrink={0}>
       {icon}
@@ -67,7 +87,8 @@ const CheckoutRow: React.FC<CheckoutRowProps> = ({
       </Text>
     )}
   </Flex>
-);
+  );
+};
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -84,6 +105,11 @@ export const CheckoutPage: React.FC = () => {
     'phone' | 'address' | 'delivery' | 'payment' | 'comments' | null
   >(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState(false);
+
+  const phoneInvalid = !phone.trim();
+  const addressInvalid =
+    !getAddressDisplay() || getAddressDisplay() === 'Указать адрес';
 
   const productsSum = totalPrice;
   const deliveryOption = getDeliveryOption();
@@ -96,7 +122,7 @@ export const CheckoutPage: React.FC = () => {
     ? `${deliveryOption.name}${deliveryOption.price > 0 ? ` • ${formatPrice(deliveryOption.price)}` : ''}`
     : 'Выбрать';
   const paymentDisplay = getPaymentOption()?.name ?? 'Выбрать';
-  const commentsDisplay = comments || 'Оставить комментарии';
+  const commentsDisplay = comments || 'Оставить комментарий';
 
   const isValid = useCallback(() => {
     if (!phone.trim()) return false;
@@ -107,11 +133,12 @@ export const CheckoutPage: React.FC = () => {
 
   const handleSubmit = useCallback(async () => {
     if (!isValid()) {
+      setValidationError(true);
       const webApp = getWebApp();
       webApp?.showAlert?.('Заполните номер телефона и адрес доставки');
       return;
     }
-
+    setValidationError(false);
     setIsSubmitting(true);
     try {
       await new Promise((r) => setTimeout(r, 800));
@@ -124,13 +151,24 @@ export const CheckoutPage: React.FC = () => {
     }
   }, [isValid, clearCart, navigate]);
 
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate('/cart');
+    }
+  }, [items.length, navigate]);
+
+  useEffect(() => {
+    if (validationError && isValid()) {
+      setValidationError(false);
+    }
+  }, [validationError, isValid]);
+
   if (items.length === 0) {
-    navigate('/cart');
     return null;
   }
 
   return (
-    <Box maxW="480px" mx="auto" w="100%" minH="100dvh" display="flex" flexDirection="column" pb={6}>
+    <PageLayout pb={0} flexContent>
       <Box p={4} flex={1}>
         <Heading size="lg" textAlign="left" mb={4}>
           Оформление заказа
@@ -141,12 +179,14 @@ export const CheckoutPage: React.FC = () => {
             title="Номер телефона"
             value={phoneDisplay}
             onClick={() => setDialogOpen('phone')}
+            hasError={validationError && phoneInvalid}
           />
           <CheckoutRow
             icon={<LuMapPin size={24} />}
             title="Адрес"
             value={addressDisplay}
             onClick={() => setDialogOpen('address')}
+            hasError={validationError && addressInvalid}
           />
           <CheckoutRow
             icon={<LuTruck size={24} />}
@@ -170,14 +210,14 @@ export const CheckoutPage: React.FC = () => {
 
         <VStack align="stretch" gap={2} mt={6} p={4} bg="bg.subtle" borderRadius="lg">
           <Flex justify="space-between">
-            <Text color="fg.muted">Продукции</Text>
+            <Text color="fg.muted">Продукты</Text>
             <Text>{formatPrice(productsSum)}</Text>
           </Flex>
           <Flex justify="space-between">
             <Text color="fg.muted">Доставка</Text>
             <Text>{formatPrice(deliveryPrice)}</Text>
           </Flex>
-          <Text fontSize="sm" color="orange.500">
+          <Text fontSize="sm" color="orange.fg">
             Оплата доставки производится после получения заказа
           </Text>
           <Box borderTopWidth="1px" borderColor="border" w="100%" pt={3} mt={2}>
@@ -221,6 +261,6 @@ export const CheckoutPage: React.FC = () => {
         open={dialogOpen === 'comments'}
         onOpenChange={(o) => setDialogOpen(o ? 'comments' : null)}
       />
-    </Box>
+    </PageLayout>
   );
 };
