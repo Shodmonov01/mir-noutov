@@ -25,7 +25,7 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
     <Text fontSize="sm" color="orange.fg">
       Оплата доставки производится после получения заказа
     </Text>
-    <Box borderTopWidth="1px" borderColor="border" w="100%" pt={3} mt={2}>
+    <Box borderTopWidth="hairline" borderColor="border" w="100%" pt={3} mt={2}>
       <Flex justify="space-between" fontWeight="semibold" fontSize="lg">
         <Text>Итого</Text>
         <Text>{formatPrice(total)}</Text>

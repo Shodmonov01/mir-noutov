@@ -11,7 +11,9 @@ export const CartEmpty: React.FC<CartEmptyProps> = ({ onGoToCatalog }) => (
   <EmptyState
     icon={
       <Box position="relative" color="fg.muted">
-        <LuShoppingCart size={80} style={{ opacity: 0.5 }} />
+        <Box opacity={0.5} lineHeight={0}>
+          <LuShoppingCart size={80} />
+        </Box>
         <Box
           position="absolute"
           bottom={-4}

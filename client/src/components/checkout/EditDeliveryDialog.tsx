@@ -9,6 +9,8 @@ import {
   DialogPositioner,
   DialogRoot,
   DialogTitle,
+  HStack,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 import { useCheckout, DELIVERY_OPTIONS } from '../../context/CheckoutContext';
@@ -49,12 +51,16 @@ export const EditDeliveryDialog: React.FC<EditDeliveryDialogProps> = ({
                   justifyContent="space-between"
                   onClick={() => handleSelect(opt.id)}
                 >
-                  <span>{opt.name}</span>
-                  {opt.price > 0 && (
-                    <span style={{ fontSize: '0.875rem' }}>
-                      {formatPrice(opt.price)}
-                    </span>
-                  )}
+                  <HStack justify="space-between" w="100%" gap={2}>
+                    <Text as="span" textAlign="left">
+                      {opt.name}
+                    </Text>
+                    {opt.price > 0 && (
+                      <Text as="span" fontSize="sm" color="fg.muted">
+                        {formatPrice(opt.price)}
+                      </Text>
+                    )}
+                  </HStack>
                 </Button>
               ))}
             </VStack>

@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 
 export interface DeliveryOption {
   id: string;
@@ -54,32 +54,32 @@ const defaultAddress: AddressData = {
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 
 export const CheckoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [phone, setPhoneState] = useState('');
-  const [address, setAddressState] = useState<AddressData>(defaultAddress);
-  const [deliveryId, setDeliveryIdState] = useState<string>(DELIVERY_OPTIONS[0]?.id ?? '');
-  const [paymentId, setPaymentIdState] = useState<string>(PAYMENT_OPTIONS[0]?.id ?? '');
-  const [comments, setCommentsState] = useState('');
+  const [phone, setPhoneState] = React.useState('');
+  const [address, setAddressState] = React.useState<AddressData>(defaultAddress);
+  const [deliveryId, setDeliveryIdState] = React.useState<string>(DELIVERY_OPTIONS[0]?.id ?? '');
+  const [paymentId, setPaymentIdState] = React.useState<string>(PAYMENT_OPTIONS[0]?.id ?? '');
+  const [comments, setCommentsState] = React.useState('');
 
-  const setPhone = useCallback((v: string) => setPhoneState(v), []);
-  const setDeliveryId = useCallback((v: string) => setDeliveryIdState(v), []);
-  const setPaymentId = useCallback((v: string) => setPaymentIdState(v), []);
-  const setComments = useCallback((v: string) => setCommentsState(v), []);
+  const setPhone = React.useCallback((v: string) => setPhoneState(v), []);
+  const setDeliveryId = React.useCallback((v: string) => setDeliveryIdState(v), []);
+  const setPaymentId = React.useCallback((v: string) => setPaymentIdState(v), []);
+  const setComments = React.useCallback((v: string) => setCommentsState(v), []);
 
-  const setAddress = useCallback((v: Partial<AddressData>) => {
+  const setAddress = React.useCallback((v: Partial<AddressData>) => {
     setAddressState((prev) => ({ ...prev, ...v }));
   }, []);
 
-  const getDeliveryOption = useCallback(
+  const getDeliveryOption = React.useCallback(
     () => DELIVERY_OPTIONS.find((o) => o.id === deliveryId),
     [deliveryId]
   );
 
-  const getPaymentOption = useCallback(
+  const getPaymentOption = React.useCallback(
     () => PAYMENT_OPTIONS.find((o) => o.id === paymentId),
     [paymentId]
   );
 
-  const getAddressDisplay = useCallback(() => {
+  const getAddressDisplay = React.useCallback(() => {
     const parts = [address.district, address.street, address.apartment, address.floor].filter(
       Boolean
     );

@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Button, Heading, VStack } from '@chakra-ui/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   LuMapPin,
   LuMessageSquare,
@@ -8,9 +9,11 @@ import {
   LuWallet,
 } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
+import { catalogKeys } from '../api/queryKeys';
 import { useCart } from '../context/CartContext';
 import { useCheckout } from '../context/CheckoutContext';
 import { formatPrice } from '../lib/formatPrice';
+import { addNotification } from '../lib/notifications';
 import { getWebApp } from '../lib/telegram';
 import { PageLayout, CheckoutRow } from '../ui';
 import {
@@ -24,6 +27,7 @@ import { CheckoutSummary } from '../components/checkout/CheckoutSummary';
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { items, totalPrice, clearCart } = useCart();
   const {
     phone,
@@ -33,11 +37,10 @@ export const CheckoutPage: React.FC = () => {
     comments,
   } = useCheckout();
 
-  const [dialogOpen, setDialogOpen] = useState<
+  const [dialogOpen, setDialogOpen] = React.useState<
     'phone' | 'address' | 'delivery' | 'payment' | 'comments' | null
   >(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [validationError, setValidationError] = useState(false);
+  const [validationError, setValidationError] = React.useState(false);
 
   const phoneInvalid = !phone.trim();
   const addressInvalid =
@@ -56,14 +59,26 @@ export const CheckoutPage: React.FC = () => {
   const paymentDisplay = getPaymentOption()?.name ?? 'Выбрать';
   const commentsDisplay = comments || 'Оставить комментарий';
 
-  const isValid = useCallback(() => {
+  const isValid = React.useCallback(() => {
     if (!phone.trim()) return false;
     const addr = getAddressDisplay();
     if (!addr || addr === 'Указать адрес') return false;
     return true;
   }, [phone, getAddressDisplay]);
 
-  const handleSubmit = useCallback(async () => {
+  const { mutate: submitOrder, isPending: isSubmitting } = useMutation({
+    mutationFn: async () => {
+      await new Promise((r) => setTimeout(r, 800));
+    },
+    onSuccess: () => {
+      clearCart();
+      void queryClient.invalidateQueries({ queryKey: catalogKeys.all });
+      addNotification({ title: 'Заказ успешно оформлен!' });
+      navigate('/');
+    },
+  });
+
+  const handleSubmit = React.useCallback(() => {
     if (!isValid()) {
       setValidationError(true);
       const webApp = getWebApp();
@@ -71,25 +86,16 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
     setValidationError(false);
-    setIsSubmitting(true);
-    try {
-      await new Promise((r) => setTimeout(r, 800));
-      clearCart();
-      const webApp = getWebApp();
-      webApp?.showAlert?.('Заказ успешно оформлен!');
-      navigate('/');
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [isValid, clearCart, navigate]);
+    submitOrder();
+  }, [isValid, submitOrder]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (items.length === 0) {
       navigate('/cart');
     }
   }, [items.length, navigate]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (validationError && isValid()) {
       setValidationError(false);
     }

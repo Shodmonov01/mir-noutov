@@ -1,23 +1,6 @@
-export interface Category {
-  id: number;
-  name: string;
-  image: string;
-}
+import type { Category, Product } from '../dto/catalog';
 
-export interface Product {
-  id: number;
-  categoryId: number;
-  title: string;
-  price: number;
-  currency?: string;
-  image: string;
-  description?: string;
-  specs?: Record<string, string>;
-  condition?: string;
-  warranty?: string;
-  contacts?: string[];
-  location?: string;
-}
+export type { Category, Product } from '../dto/catalog';
 
 export const categories: Category[] = [
   { id: 1, name: 'Ноутбуки', image: 'https://picsum.photos/200?random=1' },

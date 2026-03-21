@@ -20,7 +20,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { LuMapPin, LuPhone } from 'react-icons/lu';
-import type { Product } from '../../api/mockData';
+import type { Product } from '../../dto/catalog';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../lib/formatPrice';
 import { triggerHaptic } from '../../lib/telegram';
@@ -86,7 +86,7 @@ export const ProductDetailDrawer: React.FC<ProductDetailDrawerProps> = ({
               <Box
                 position="relative"
                 aspectRatio={1}
-                maxH="280px"
+                maxH="drawerImageMax"
                 mx="auto"
                 w="100%"
                 borderRadius="lg"
@@ -178,7 +178,9 @@ export const ProductDetailDrawer: React.FC<ProductDetailDrawerProps> = ({
 
               {product.contacts && product.contacts.length > 0 && (
                 <Flex align="center" gap={2} flexWrap="wrap">
-                  <LuPhone size={16} color="var(--chakra-colors-fg-muted)" />
+                  <Box color="fg.muted" lineHeight={0}>
+                    <LuPhone size={16} />
+                  </Box>
                   {product.contacts.map((c) => (
                     <Link key={c} href={`tel:${c}`} fontSize="sm" color="blue.fg">
                       {c}

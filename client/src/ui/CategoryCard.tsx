@@ -25,7 +25,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   return (
     <CardRoot
       flexShrink={0}
-      w="80px"
+      w="categoryChip"
       cursor={onClick ? 'pointer' : 'default'}
       variant={isSelected ? 'elevated' : 'outline'}
       onClick={onClick}
@@ -36,9 +36,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       transition="all 0.2s"
       _active={onClick ? { transform: 'scale(0.98)' } : undefined}
       _focusVisible={{
-        outline: '2px solid',
+        outlineWidth: 'focusRing',
+        outlineStyle: 'solid',
         outlineColor: 'blue.500',
-        outlineOffset: '2px',
+        outlineOffset: 'focusRing',
       }}
     >
       <Box position="relative" aspectRatio={1} overflow="hidden" borderRadius="md">

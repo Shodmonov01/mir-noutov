@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import type { Product } from '../../api/mockData';
+import type { Product } from '../../dto/catalog';
 import { formatPrice } from '../../lib/formatPrice';
 import { ProductImage, CartActions } from '../../ui';
 
@@ -34,8 +34,8 @@ export const CartItem: React.FC<CartItemProps> = ({
       gap={4}
     >
       <Box
-        w="72px"
-        h="72px"
+        w="cartThumb"
+        h="cartThumb"
         flexShrink={0}
         borderRadius="md"
         overflow="hidden"

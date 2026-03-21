@@ -15,8 +15,6 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   flexContent = false,
 }) => (
   <Box
-    maxW="480px"
-    mx="auto"
     w="100%"
     minH="100dvh"
     display={flexContent ? 'flex' : 'block'}

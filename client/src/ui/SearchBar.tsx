@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Flex, IconButton, Input, InputGroup } from '@chakra-ui/react';
+import { Badge, Box, Flex, IconButton, Input, InputGroup } from '@chakra-ui/react';
 import { LuSearch, LuShoppingCart, LuUser } from 'react-icons/lu';
 
 interface SearchBarProps {
@@ -27,7 +27,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     >
       <LuUser size={24} />
     </IconButton>
-    <InputGroup flex={1} endElement={<LuSearch size={20} style={{ opacity: 0.6 }} />}>
+    <InputGroup
+      flex={1}
+      endElement={
+        <Box color="fg.muted" opacity={0.6} display="flex" alignItems="center">
+          <LuSearch size={20} />
+        </Box>
+      }
+    >
       <Input
         placeholder="Поиск"
         value={searchValue}
@@ -53,7 +60,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           size="sm"
           borderRadius="full"
           px={1.5}
-          minW="18px"
+          minW="badgeMin"
           textAlign="center"
         >
           {cartCount}

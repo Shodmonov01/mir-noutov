@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { CatalogPage } from './pages/CatalogPage';
 import { CartPage } from './pages/CartPage';
@@ -6,8 +6,8 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { ProfileSidebar } from './components/ProfileSidebar';
 import { useTelegramBackButton } from './hooks/useTelegramBackButton';
 
-function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+export const App: React.FC = () => {
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
   useTelegramBackButton();
 
   return (
@@ -24,6 +24,4 @@ function App() {
       <ProfileSidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
     </>
   );
-}
-
-export default App;
+};

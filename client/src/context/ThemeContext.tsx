@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import { getWebApp } from '../lib/telegram';
 
 type ThemeMode = 'light' | 'dark';
@@ -13,22 +13,22 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const webApp = getWebApp();
-  const [theme, setThemeState] = useState<ThemeMode>(
+  const [theme, setThemeState] = React.useState<ThemeMode>(
     (webApp?.colorScheme ?? 'light') as ThemeMode
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!webApp) return;
     webApp.onEvent('themeChanged', () => {
       setThemeState((webApp.colorScheme ?? 'light') as ThemeMode);
     });
   }, [webApp]);
 
-  const setTheme = useCallback((value: ThemeMode) => {
+  const setTheme = React.useCallback((value: ThemeMode) => {
     setThemeState(value);
   }, []);
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = React.useCallback(() => {
     setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 

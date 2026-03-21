@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, CardRoot, Flex, Text } from '@chakra-ui/react';
-import type { Product } from '../../api/mockData';
+import type { Product } from '../../dto/catalog';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../lib/formatPrice';
 import { triggerHaptic } from '../../lib/telegram';

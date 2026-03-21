@@ -43,7 +43,12 @@ export const CheckoutRow: React.FC<CheckoutRowProps> = ({
       _hover={onClick ? { bg: 'bg.muted' } : undefined}
       _focusVisible={
         onClick
-          ? { outline: '2px solid', outlineColor: 'blue.500', outlineOffset: '2px' }
+          ? {
+              outlineWidth: 'focusRing',
+              outlineStyle: 'solid',
+              outlineColor: 'blue.500',
+              outlineOffset: 'focusRing',
+            }
           : undefined
       }
     >

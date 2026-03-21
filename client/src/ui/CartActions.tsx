@@ -26,7 +26,7 @@ export const CartActions: React.FC<CartActionsProps> = ({
       –
     </Button>
     <Box
-      minW={size === 'lg' ? '48px' : '36px'}
+      minW={size === 'lg' ? 'stepperLg' : 'stepperSm'}
       textAlign="center"
       fontWeight={size === 'lg' ? 'semibold' : 'medium'}
       fontSize={size === 'lg' ? 'lg' : 'sm'}

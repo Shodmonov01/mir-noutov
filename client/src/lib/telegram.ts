@@ -38,6 +38,6 @@ export function initTelegramWebApp(): void {
     webApp.setBackgroundColor(themeParams.bg_color);
   }
   if (themeParams?.secondary_bg_color ?? themeParams?.bg_color) {
-    webApp.setHeaderColor(themeParams.secondary_bg_color ?? themeParams.bg_color ?? '#fff');
+    webApp.setHeaderColor(themeParams.secondary_bg_color ?? themeParams.bg_color ?? 'white');
   }
 }

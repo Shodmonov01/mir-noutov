@@ -42,7 +42,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         colorPalette="blue"
         size="lg"
         w="100%"
-        maxW="280px"
+        maxW="emptyStateMax"
         onClick={onAction}
       >
         {actionLabel}
