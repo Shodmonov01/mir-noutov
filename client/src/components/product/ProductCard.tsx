@@ -1,46 +1,20 @@
 import React from 'react';
-import { Box, Button, CardRoot, Flex, Image, Text } from '@chakra-ui/react';
-import type { Product } from '../api/mockData';
-import { useCart } from '../context/CartContext';
-import { formatPrice } from '../lib/formatPrice';
-import { triggerHaptic } from '../lib/telegram';
+import { Box, Button, CardRoot, Flex, Text } from '@chakra-ui/react';
+import type { Product } from '../../api/mockData';
+import { useCart } from '../../context/CartContext';
+import { formatPrice } from '../../lib/formatPrice';
+import { triggerHaptic } from '../../lib/telegram';
+import { ProductImage, CartActions } from '../../ui';
 
 interface ProductCardProps {
   product: Product;
   onProductClick?: (product: Product) => void;
 }
 
-const ProductImageWithFallback: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
-  const [error, setError] = React.useState(false);
-  if (error) {
-    return (
-      <Flex
-        w="100%"
-        h="100%"
-        bg="bg.muted"
-        align="center"
-        justify="center"
-        color="fg.muted"
-        fontSize="2xl"
-      >
-        ?
-      </Flex>
-    );
-  }
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      objectFit="cover"
-      w="100%"
-      h="100%"
-      loading="lazy"
-      onError={() => setError(true)}
-    />
-  );
-};
-
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onProductClick }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onProductClick,
+}) => {
   const { addItem, setQuantity, getQuantity } = useCart();
   const qty = getQuantity(product.id);
 
@@ -115,15 +89,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onProductClic
           {product.condition}
         </Box>
       )}
-      <Box position="relative" aspectRatio={1} overflow="hidden" bg="bg.muted" flexShrink={0}>
-        <ProductImageWithFallback src={product.image} alt={product.title} />
-      </Box>
-      <Flex
-        p={3}
-        flex={1}
-        direction="column"
-        minH={0}
+      <Box
+        position="relative"
+        aspectRatio={1}
+        overflow="hidden"
+        bg="bg.muted"
+        flexShrink={0}
       >
+        <ProductImage
+          src={product.image}
+          alt={product.title}
+          fallbackIcon={<Text fontSize="2xl">?</Text>}
+        />
+      </Box>
+      <Flex p={3} flex={1} direction="column" minH={0}>
         <Text fontWeight="medium" lineClamp={2} fontSize="sm">
           {product.title}
         </Text>
@@ -136,39 +115,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onProductClic
           {priceStr}
         </Text>
         <Box mt="auto" pt={3}>
-        {qty === 0 ? (
-          <Button
-            w="100%"
-            colorPalette="blue"
-            size="sm"
-            onClick={handleAdd}
-          >
-            ДОБАВИТЬ
-          </Button>
-        ) : (
-          <Flex gap={2} align="center">
+          {qty === 0 ? (
             <Button
-              flex={1}
-              colorPalette="red"
+              w="100%"
+              colorPalette="blue"
               size="sm"
-              variant="outline"
-              aria-label="Уменьшить количество"
-              onClick={handleDecrement}
+              onClick={handleAdd}
             >
-              –
+              ДОБАВИТЬ
             </Button>
-            <Button
-              flex={1}
-              colorPalette="green"
+          ) : (
+            <CartActions
+              quantity={qty}
+              onDecrement={handleDecrement}
+              onIncrement={handleIncrement}
               size="sm"
-              variant="outline"
-              aria-label="Увеличить количество"
-              onClick={handleIncrement}
-            >
-              +
-            </Button>
-          </Flex>
-        )}
+            />
+          )}
         </Box>
       </Flex>
     </CardRoot>

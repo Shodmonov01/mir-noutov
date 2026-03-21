@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { LuSearch } from 'react-icons/lu';
-import { SearchBar } from '../components/SearchBar';
-import { CategoryCard } from '../components/CategoryCard';
-import { ProductCard } from '../components/ProductCard';
-import { ProductDetailDrawer } from '../components/ProductDetailDrawer';
-import { PageLayout } from '../components/PageLayout';
+import { useNavigate } from 'react-router-dom';
+import { SearchBar, CategoryCard, PageLayout } from '../ui';
+import { ProductCard, ProductDetailDrawer } from '../components/product';
 import { useCart } from '../context/CartContext';
 import { categories, products } from '../api/mockData';
 import type { Product } from '../api/mockData';
@@ -15,6 +13,7 @@ interface CatalogPageProps {
 }
 
 export const CatalogPage: React.FC<CatalogPageProps> = ({ onProfileClick }) => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -52,9 +51,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onProfileClick }) => {
           searchValue={searchValue}
           onSearchChange={setSearchValue}
           cartCount={totalCount}
+          onCartClick={() => navigate('/cart')}
         />
 
-        <Flex gap={3} overflowX="auto" pb={2} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+        <Flex
+          gap={3}
+          overflowX="auto"
+          pb={2}
+          css={{ '&::-webkit-scrollbar': { display: 'none' } }}
+        >
           {categories.map((cat) => (
             <CategoryCard
               key={cat.id}

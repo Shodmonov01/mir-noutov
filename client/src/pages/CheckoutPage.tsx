@@ -1,13 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { PageLayout } from '../components/PageLayout';
+import { Box, Button, Heading, VStack } from '@chakra-ui/react';
 import {
   LuMapPin,
   LuMessageSquare,
@@ -19,76 +11,16 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useCheckout } from '../context/CheckoutContext';
 import { formatPrice } from '../lib/formatPrice';
+import { getWebApp } from '../lib/telegram';
+import { PageLayout, CheckoutRow } from '../ui';
 import {
   EditPhoneDialog,
   EditAddressDialog,
   EditDeliveryDialog,
   EditPaymentDialog,
   EditCommentsDialog,
-} from '../components/checkout/CheckoutEditDialogs';
-import { getWebApp } from '../lib/telegram';
-
-interface CheckoutRowProps {
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  onClick?: () => void;
-  hasError?: boolean;
-}
-
-const CheckoutRow: React.FC<CheckoutRowProps> = ({
-  icon,
-  title,
-  value,
-  onClick,
-  hasError,
-}) => {
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent) => {
-      if (onClick && (e.key === 'Enter' || e.key === ' ')) {
-        e.preventDefault();
-        onClick();
-      }
-    },
-    [onClick]
-  );
-
-  return (
-  <Flex
-    align="center"
-    gap={4}
-    p={4}
-    bg="bg.subtle"
-    borderWidth={hasError ? 2 : 0}
-    borderColor={hasError ? 'red.500' : 'transparent'}
-    borderRadius="lg"
-    cursor={onClick ? 'pointer' : 'default'}
-    onClick={onClick}
-    onKeyDown={handleKeyDown}
-    role={onClick ? 'button' : undefined}
-    tabIndex={onClick ? 0 : undefined}
-    _hover={onClick ? { bg: 'bg.muted' } : undefined}
-    _focusVisible={onClick ? { outline: '2px solid', outlineColor: 'blue.500', outlineOffset: '2px' } : undefined}
-  >
-    <Box color="fg.muted" flexShrink={0}>
-      {icon}
-    </Box>
-    <Flex flex={1} direction="column" minW={0}>
-      <Text fontSize="sm" color="fg.muted">
-        {title}
-      </Text>
-      <Text fontWeight="medium" lineClamp={2}>
-        {value}
-      </Text>
-    </Flex>
-    {onClick && (
-      <Text color="fg.muted" fontSize="lg">
-        ›
-      </Text>
-    )}
-  </Flex>
-  );
-};
+} from '../components/checkout';
+import { CheckoutSummary } from '../components/checkout/CheckoutSummary';
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -208,25 +140,11 @@ export const CheckoutPage: React.FC = () => {
           />
         </VStack>
 
-        <VStack align="stretch" gap={2} mt={6} p={4} bg="bg.subtle" borderRadius="lg">
-          <Flex justify="space-between">
-            <Text color="fg.muted">Продукты</Text>
-            <Text>{formatPrice(productsSum)}</Text>
-          </Flex>
-          <Flex justify="space-between">
-            <Text color="fg.muted">Доставка</Text>
-            <Text>{formatPrice(deliveryPrice)}</Text>
-          </Flex>
-          <Text fontSize="sm" color="orange.fg">
-            Оплата доставки производится после получения заказа
-          </Text>
-          <Box borderTopWidth="1px" borderColor="border" w="100%" pt={3} mt={2}>
-            <Flex justify="space-between" fontWeight="semibold" fontSize="lg">
-              <Text>Итого</Text>
-              <Text>{formatPrice(total)}</Text>
-            </Flex>
-          </Box>
-        </VStack>
+        <CheckoutSummary
+          productsSum={productsSum}
+          deliveryPrice={deliveryPrice}
+          total={total}
+        />
       </Box>
 
       <Box p={4} pt={0}>

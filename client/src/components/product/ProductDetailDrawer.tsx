@@ -20,10 +20,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { LuMapPin, LuPhone } from 'react-icons/lu';
-import type { Product } from '../api/mockData';
-import { useCart } from '../context/CartContext';
-import { formatPrice } from '../lib/formatPrice';
-import { triggerHaptic } from '../lib/telegram';
+import type { Product } from '../../api/mockData';
+import { useCart } from '../../context/CartContext';
+import { formatPrice } from '../../lib/formatPrice';
+import { triggerHaptic } from '../../lib/telegram';
+import { CartActions } from '../../ui';
 
 interface ProductDetailDrawerProps {
   product: Product | null;
@@ -197,36 +198,12 @@ export const ProductDetailDrawer: React.FC<ProductDetailDrawerProps> = ({
                     Добавить в корзину
                   </Button>
                 ) : (
-                  <Flex gap={2} align="center">
-                    <Button
-                      flex={1}
-                      colorPalette="red"
-                      variant="outline"
-                      size="lg"
-                      aria-label="Уменьшить количество"
-                      onClick={handleDecrement}
-                    >
-                      –
-                    </Button>
-                    <Box
-                      minW="48px"
-                      textAlign="center"
-                      fontWeight="semibold"
-                      fontSize="lg"
-                    >
-                      {qty}
-                    </Box>
-                    <Button
-                      flex={1}
-                      colorPalette="green"
-                      variant="outline"
-                      size="lg"
-                      aria-label="Увеличить количество"
-                      onClick={handleIncrement}
-                    >
-                      +
-                    </Button>
-                  </Flex>
+                  <CartActions
+                    quantity={qty}
+                    onDecrement={handleDecrement}
+                    onIncrement={handleIncrement}
+                    size="lg"
+                  />
                 )}
               </Box>
             </VStack>

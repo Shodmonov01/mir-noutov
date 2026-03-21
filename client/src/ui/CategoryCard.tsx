@@ -1,9 +1,8 @@
 import React from 'react';
 import { Box, CardRoot, Image, Text } from '@chakra-ui/react';
-import type { Category } from '../api/mockData';
 
 interface CategoryCardProps {
-  category: Category;
+  category: { id: number; name: string; image: string };
   isSelected?: boolean;
   onClick?: () => void;
 }
@@ -36,7 +35,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       aria-pressed={onClick ? isSelected : undefined}
       transition="all 0.2s"
       _active={onClick ? { transform: 'scale(0.98)' } : undefined}
-      _focusVisible={{ outline: '2px solid', outlineColor: 'blue.500', outlineOffset: '2px' }}
+      _focusVisible={{
+        outline: '2px solid',
+        outlineColor: 'blue.500',
+        outlineOffset: '2px',
+      }}
     >
       <Box position="relative" aspectRatio={1} overflow="hidden" borderRadius="md">
         <Image
